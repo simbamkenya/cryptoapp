@@ -1,29 +1,47 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
+import { csv, timeParse, scaleBand, scaleLinear, max} from 'd3';
 import Sidebar from './components/Sidebar';
 import Main from './components/Main';
+import BarChart from './components/BarChart';
+import  ContextProvider   from './DataContext';
+import { OhlcContext } from './DataContext'; 
+import Chart from './components/Chart';
+
+
 
 function App() {
-  let ws = new WebSocket('wss://stream.binance.com:9443/ws/ethusdt@trade')
-  const [data, setData]= useState([])
   
-  useEffect(()=>{
-     ws.onmessage = (e) => {
-     const stockObject = JSON.parse(e.data);
-    //  console.log(stockObject)
-    let stock = []
-     setData(stock.push(stockObject))
-     console.log(stock)
-  }
+  const dimensions = { width: 800, height: 400 }
+  // const [coinData, setCoinData] = useState([])
 
-  }, [ws])
-//  console.log(data.p)
+//   const volumeAccessor = d => d.volume;
+//   // console.log('mp',data.map(d => d.date))
   
+
+//    //barScale
+//    const barScale = scaleBand()
+//     .domain(data.map(d => d.date))
+//     .range([0, dimensions.width])
+//     .padding(0.2)
+
+   //yscale
+  // const yScale = scaleLinear()
+  //   .domain([0, max(data, volumeAccessor)])
+  //   .range([dimensions.height, 0])
+
+  
+   
   return (
-    <div className="md:flex antialiased">
-      <Sidebar />
-      <Main />
-    </div>
+    <ContextProvider>
+       <div className="md:flex antialiased">
+        <Sidebar />
+        <Main dimensions={dimensions} />
+        {/* <BarChart dimensions={dimensions} /> */}
+        {/* <Chart dimensions={dimensions} /> */}
+      </div>
+    </ContextProvider>
+   
   );
 }
 
