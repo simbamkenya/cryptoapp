@@ -1,12 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRef, useState, useContext } from 'react';
 import { select, extent, scaleTime, scaleLinear, area, line, bisector, axisBottom, axisLeft, max, pointer, scaleBand } from 'd3'
 import CrossHairs from './CrossHairs';
 import BarChart from './BarChart';
 import { OhlcContext } from '../DataContext'; 
+import { timeFormat, format} from 'd3'
 
 
 function Chart({ dimensions}) {
+
+  const formatTime = timeFormat("%m/%d/%Y")
+  const formatVolume = format(",")
+  
   const data = useContext(OhlcContext);
   const svg = useRef(null);
 
@@ -51,12 +56,20 @@ function Chart({ dimensions}) {
       setMouseCords({x: clientX, y: clientY})
   }
  
+const [date1, setDate] = useState()
  const date = xScale.invert(mouseCords.x);
  const bisect = bisector(dateAccessor);
  const index = bisect.center(data, date);
  const d = data[index];
  const x = xScale(dateAccessor(d))
  const y= yScale(volumeAccessor(d))
+
+ useEffect(() => {
+  setDate(date)
+ }, [])
+ 
+const tradeDate = formatTime(dateAccessor(d));
+const tradeVolume = formatVolume(volumeAccessor(d));
 
  //area
  const areaGen = area()
@@ -66,11 +79,19 @@ function Chart({ dimensions}) {
         
   return (
     <>
-    <svg ref={svg}  style={{backgroundColor: '#cce5df'}} width={dimensions.width} height={dimensions.height}>
-        <g onMouseMove={handleMouseMove} transform={'translate(40,40)'}> 
+    <svg 
+    ref={svg} 
+    style={{backgroundColor: '#F3F3F3'}} 
+    width={dimensions.width + dimensions.margin.left+ dimensions.margin.right} 
+    height={dimensions.height + dimensions.margin.top + dimensions.margin.bottom}
+    >
+        <g 
+        onMouseMove={handleMouseMove} 
+        transform={`translate(${dimensions.margin.left, dimensions.margin.top})`}
+        > 
             <path fill="none" stroke='steelblue' strokeWidth="1.5" d={lineGen(data)}/>
-            <path fill="gray" d={areaGen(data)}/>
-            <g id="xAxis" fill='none'></g>
+            <path  d={areaGen(data)} fill='#B0DCFE'/>
+            <g id="xAxis" fill='none' transform={`translate(0,${dimensions.height})`}></g>
             <g id="yAxis" fill='none'></g>
             
             <CrossHairs 
@@ -85,11 +106,12 @@ function Chart({ dimensions}) {
                 r={5}
                 fill={'red'}
             />
-            <text x={10} y={30}>{x}</text>
-            <text x={200} y={30}>{y}</text>
+            
+            <text x={10} y={30}>Date: {tradeDate}</text>
+            <text x={200} y={30}>Volume: {tradeVolume}</text>
         </g>
     </svg>
-    <BarChart dimensions={dimensions} x={mouseCords.x}/>
+    <BarChart dimensions={dimensions} x={mouseCords.x} date={tradeDate} volume={tradeVolume}/>
     </>
   )
 }

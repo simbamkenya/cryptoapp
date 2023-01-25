@@ -12,7 +12,23 @@ import Chart from './components/Chart';
 
 function App() {
   
-  const dimensions = { width: 800, height: 400 }
+  const dms = { width: 800, height: 400, margin : { top: 30, right: 20, bottom: 40, left: 60 }}
+
+  const width = dms.width - dms.margin.left - dms.margin.right;
+  const height = dms.height - dms.margin.top - dms.margin.bottom;
+  
+
+  const dimensions = {width, height, margin : { top: 30, right: 20, bottom: 40, left: 60 }}
+
+      // width = 960 - margin.left - margin.right,
+      // height = 640 - margin.top - margin.bottom;
+  
+  // var svg = d3.select('body').append('svg')
+  //     .attr('width', width + margin.left + margin.right)
+  //     .attr('height', height + margin.top + margin.bottom)
+  //   .append('g')
+  //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+  
   // const [coinData, setCoinData] = useState([])
 
 //   const volumeAccessor = d => d.volume;

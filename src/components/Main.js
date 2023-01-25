@@ -20,10 +20,10 @@ function Main({dimensions,  yScale, barScale}) {
                     Buildings Overview
                 </header>
             </section> */}
-            <section id="chart" className="p-4 mx-4 bg-red-200">
-			  <Chart dimensions={dimensions}/>
-        <BarChart  dimensions={dimensions}/>
-			</section>
+          <section id="chart" className="p-4 mx-4 flex flex-col items-center">
+            <Chart dimensions={dimensions}/>
+            <BarChart  dimensions={dimensions}/>
+		    	</section>
         </section>
     </main>
   )
